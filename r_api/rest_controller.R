@@ -6,11 +6,13 @@ function(req){
     timestamp = Sys.time()
     file_name = gsub(" ","", timestamp)
     
-    write.csv(as.data.frame(req$postBody), "normalization_pipeline/POS.csv")
+    df <- read.csv(req$postBody)
+    write.csv(df, "normalization_pipeline/POS.csv")
+    #write.csv(as.data.frame(req$postBody), "normalization_pipeline/POS.csv")
 
-    table <- read.csv('normalization_pipeline/POS.csv')
+    #table <- read.csv('normalization_pipeline/POS.csv')
 
-    table
+    df
 
 
     #try(system(stringr::str_interp("cd normalization_pipeline && perl generate_metabolomics_glue_script.pl POS.csv NEG.csv ${file_name} > run_me.sh;sh run_me.sh"), intern = TRUE, ignore.stderr = TRUE))
