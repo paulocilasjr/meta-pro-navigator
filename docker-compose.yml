@@ -1,0 +1,19 @@
+version: "3"
+services:
+  r_api:
+    build: ./r_api
+    ports: 
+      - "80:80"
+    networks:
+      - my_network
+  frontend:
+    build: ./Frontend
+    ports:
+      - "3000:3000"
+    user: root
+    depends_on:
+      - r_api
+    networks:
+      - my_network
+networks:
+  my_network:

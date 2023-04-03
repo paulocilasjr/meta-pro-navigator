@@ -1,0 +1,18 @@
+FROM node:latest
+
+RUN useradd -ms /bin/bash admin
+
+WORKDIR /app
+
+COPY --chmod=0755 package.json package-lock.json /app/
+
+RUN npm install
+
+COPY --chmod=0755 . /app
+
+RUN chown -R admin:admin /app
+RUN chmod 755 /app
+USER admin
+
+CMD ["npm", "run", "dev"]
+
