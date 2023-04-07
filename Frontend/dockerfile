@@ -7,6 +7,8 @@ WORKDIR /app
 COPY --chmod=0755 package.json package-lock.json /app/
 
 RUN npm install
+RUN npm install xlsx
+RUN npm install isomorphic-fetch
 
 COPY --chmod=0755 . /app
 

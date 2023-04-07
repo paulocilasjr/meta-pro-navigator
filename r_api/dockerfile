@@ -11,6 +11,7 @@ RUN useradd -ms /bin/bash admin
 # Install packages from CRAN and GitHub
 RUN R -e "install.packages('plumber')"
 RUN R -e "install.packages('readr')"
+RUN R -e "install.packages('jsonlite', repos='http://cran.rstudio.com/')"
 
 # copy everything from the current directory into the container
 COPY --chmod=0755 / /app 
