@@ -4,9 +4,11 @@ FROM rocker/r-ver:4.2.1
 # Install required packages
 RUN apt-get update -qq && apt-get install -y \
       libssl-dev \
-      libcurl4-gnutls-dev
-      
-RUN useradd -ms /bin/bash admin
+      libcurl4-gnutls-dev \
+      sudo
+
+# Create a non-root user with sudo privileges
+RUN useradd -m docker && echo "docker:docker" | chpasswd && adduser docker sudo
 
 # Install packages from CRAN and GitHub
 RUN R -e "install.packages('plumber')"
@@ -17,9 +19,9 @@ RUN R -e "install.packages('jsonlite', repos='http://cran.rstudio.com/')"
 COPY --chmod=0755 / /app 
 WORKDIR /app
 
-RUN chown -R admin:admin /app
+RUN chown -R docker:docker /app
 RUN chmod 755 /app
-USER admin
+USER docker
 
 ENV PATH="$PATH:/app/normalization_pipeline"
 

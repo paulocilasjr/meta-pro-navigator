@@ -1,20 +1,29 @@
-FROM node:latest
+# Start with a specific version of the Node.js image
+FROM node:14.18.1
 
-RUN useradd -ms /bin/bash admin
+# Create a non-root user with limited permissions
+RUN adduser --disabled-password --gecos "" admin
+USER admin
+WORKDIR /home/admin
 
-WORKDIR /app
+# Copy only the necessary files into the container
+COPY --chown=admin:admin package.json package-lock.json /home/admin/
 
-COPY --chmod=0755 package.json package-lock.json /app/
-
-RUN npm install
+# Install dependencies as a non-root user
+RUN npm ci --production
 RUN npm install xlsx
 RUN npm install isomorphic-fetch
 
-COPY --chmod=0755 . /app
+# Copy the rest of the application files into the container
+COPY --chown=admin:admin . /home/admin
 
-RUN chown -R admin:admin /app
-RUN chmod 755 /app
-USER admin
+RUN chmod +x ./node_modules/.bin/next
 
+# Change the working directory to the application root
+WORKDIR /home/admin/app
+
+# Expose the port on which the application listens
+EXPOSE 3000
+
+# Start the application as a non-root user
 CMD ["npm", "run", "dev"]
-
